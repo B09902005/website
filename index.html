@@ -1,76 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video Player</title>
+    <title>註冊登入登出範例</title>
 </head>
 <body>
-    <h1 id="who"></h1>
-    <h3 id="dollar"></h3>
-    <h3 id="time"></h3>
+    <h2>註冊</h2>
+    <form id="register-form">
+        <label for="username">帳號:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">密碼:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">註冊</button>
+    </form>
+
+    <h2>登入</h2>
+    <form id="login-form">
+        <label for="login-username">帳號:</label>
+        <input type="text" id="login-username" name="username" required><br><br>
+        <label for="login-password">密碼:</label>
+        <input type="password" id="login-password" name="password" required><br><br>
+        <button type="submit">登入</button>
+    </form>
+    
+    <p id="isCorrect"></p>
 
     <script>
-	var user  = sessionStorage.getItem("using");
-	var users = sessionStorage.getItem("users");
+        // 儲存已註冊的帳號密碼
+        var users = sessionStorage.getItem("users");
 	console.log(users);
-	users = JSON.parse(users);
+        if (users === null){
+	    users = {};
+	}else{
+	    users = JSON.parse(users);
+	}
 	console.log(users);
-        var variableElement = document.getElementById("who");
-        variableElement.innerHTML = "Hello, " + user;
 
-        var str1 = "You have ";
-	var money = parseInt(users[user]["money"]);
-	var str2 = " dollars."
-        variableElement = document.getElementById("dollar");
-        variableElement.innerHTML = str1 + money + str2;
+        // 註冊表單提交處理函式
+        document.getElementById("register-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // 防止表單提交
 
-        var str3 = "You have ";
-	var time = parseInt(users[user]["time"]);
-	var str4 = " seconds left to watch the video."
-        var variableElement = document.getElementById("time");
-        variableElement.innerHTML = str3 + time + str4;
-    </script>
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
 
-    <button onclick=redirectTo("1/video.mp4")>Watch Video 1</button>
-    <button onclick=redirectTo("2/video.mp4")>Watch Video 2</button>
-    <button onclick=redirectTo("3/video.mp4")>Watch Video 3</button>
 
-    <script>
-        function redirectTo(video) {
-	    users = JSON.stringify(users);
-            sessionStorage.setItem('users', users);
-	    sessionStorage.setItem('video', video);
-            window.location.href = "website.html";
-        }
-    </script>
-    <br><br>
-    <button onclick=buytime()>Buy more time</button>
-    <br>
-    <button onclick=logout()>Log out</button>
-    <br>
-    <p id="enough"></p>
-    <script>
-        variableElement = document.getElementById("enough");
-        variableElement.innerHTML = "";
-	function buytime(){
-            variableElement = document.getElementById("enough");
-	    if (users[user]["money"] >= 10){
-		users[user]["time"]  += 30;
-		users[user]["money"] -= 10;
-                variableElement.innerHTML = "";
+            // 清除輸入框
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+
+	    var variableElement = document.getElementById("isCorrect");
+	    if (users.hasOwnProperty(username)){
+		variableElement.innerHTML = "此帳號已被註冊";
 	    }else{
-                variableElement.innerHTML = "金額不足";
+		variableElement.innerHTML = "註冊成功";
+                users[username] = {};
+		users[username]["password"] = password;
+		users[username]["time"] = 30;
+		users[username]["money"] = 100;
 	    }
-            variableElement = document.getElementById("dollar");
-            variableElement.innerHTML = str1 + users[user]["money"] + str2;
-            variableElement = document.getElementById("time");
-            variableElement.innerHTML = str3 + users[user]["time"] + str4;
-	}
-	function logout(){
-	    users = JSON.stringify(users);
-            sessionStorage.setItem('users', users);
-	    window.location.href = "login.html";
-	}
+  	});
+
+        // 登入表單提交處理函式
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // 防止表單提交
+
+            var username = document.getElementById("login-username").value;
+            var password = document.getElementById("login-password").value;
+	    var variableElement = document.getElementById("isCorrect");
+
+            // 檢查帳號密碼是否正確
+	    if (!(username in users)){
+		variableElement.innerHTML = "帳號錯誤";
+	    }else if (users[username]["password"] !== password){
+		variableElement.innerHTML = "密碼錯誤";
+	    }else{
+		users = JSON.stringify(users);
+		sessionStorage.setItem('users', users);
+		sessionStorage.setItem('using', username);
+                variableElement.innerHTML = "登入成功";
+		window.location.href = "front.html";
+	    }
+            // 清除輸入框
+            document.getElementById("login-username").value = "";
+            document.getElementById("login-password").value = "";
+        });
+
     </script>
+    <p><br><br><br> TODO: <br>(1) 把介面弄好看 (2)是否還有遺漏的功能？</p>
 </body>
 </html>
-
