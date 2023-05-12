@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1 id="who"></h1>
+    <h3 id="dollar"></h3>
+    <h3 id="time"></h3>
+    <script>
+	var user  = sessionStorage.getItem("using");
+	var users = sessionStorage.getItem("users");
+	var videoname = sessionStorage.getItem("video");
+	console.log(users);
+	users = JSON.parse(users);
+	console.log(users);
+	console.log(videoname);
+        var variableElement = document.getElementById("who");
+        variableElement.innerHTML = "Hello, " + user;
+
+        var str1 = "You have ";
+	var money = parseInt(users[user]["money"]);
+	var str2 = " dollars."
+        variableElement = document.getElementById("dollar");
+        variableElement.innerHTML = str1 + money + str2;
+
+        var str3 = "You have ";
+	var time = parseInt(users[user]["time"]);
+	var str4 = " seconds left to watch the video."
+        var variableElement = document.getElementById("time");
+        variableElement.innerHTML = str3 + users[user]["time"] + str4;
+        if (users[user]["time"] < 0){
+	    users = JSON.stringify(users);
+            sessionStorage.setItem("users", users);
+            window.location.href = "index.html";
+	}
+    </script>
+
+<video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
+  Your browser does not support the video tag.
+</video>
+
+    <script>
+        var video = document.getElementById("video");
+	video.src = videoname;
+	var originaltime = users[user]["time"];
+	var starttime = Date.now();
+	var playing = false;
+	video.addEventListener("play", function() {
+	    originaltime = users[user]["time"];
+	    starttime = Date.now();
+	    playing = true;
+	    console.log("影片開始");
+	});
+	video.addEventListener("pause", function() {
+	    playing = false;
+	    console.log("影片暫停");
+	});
+	video.addEventListener("ended", function() {
+	    playing = false;
+	    console.log("影片結束");
+	});
+        video.addEventListener("timeupdate", function() {
+	    if (playing == true){
+        	users[user]["time"] = Math.round(originaltime - (Date.now() - starttime)/1000);
+        	document.getElementById("time").textContent = "You have " + users[user]["time"] + " seconds left to watch the video.";
+        	if (users[user]["time"] < 0){
+		    users = JSON.stringify(users);
+		    sessionStorage.setItem("users", users);
+	            window.location.href = "index.html";
+		}
+	    }
+        });
+    </script>
+
+
+    <button onclick=goback()>Click to back to the previous page</button>
+
+    <script>
+        function goback() {
+	    users = JSON.stringify(users);
+	    sessionStorage.setItem("users", users);
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

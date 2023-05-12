@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Player</title>
+</head>
+<body>
+    <h1 id="who"></h1>
+    <h3 id="dollar"></h3>
+    <h3 id="time"></h3>
+
+    <script>
+	var user  = sessionStorage.getItem("using");
+	var users = sessionStorage.getItem("users");
+	console.log(users);
+	users = JSON.parse(users);
+	console.log(users);
+        var variableElement = document.getElementById("who");
+        variableElement.innerHTML = "Hello, " + user;
+
+        var str1 = "You have ";
+	var money = parseInt(users[user]["money"]);
+	var str2 = " dollars."
+        variableElement = document.getElementById("dollar");
+        variableElement.innerHTML = str1 + money + str2;
+
+        var str3 = "You have ";
+	var time = parseInt(users[user]["time"]);
+	var str4 = " seconds left to watch the video."
+        var variableElement = document.getElementById("time");
+        variableElement.innerHTML = str3 + time + str4;
+    </script>
+
+    <button onclick=redirectTo("1/video.mp4")>Watch Video 1</button>
+    <button onclick=redirectTo("2/video.mp4")>Watch Video 2</button>
+    <button onclick=redirectTo("3/video.mp4")>Watch Video 3</button>
+
+    <script>
+        function redirectTo(video) {
+	    users = JSON.stringify(users);
+            sessionStorage.setItem('users', users);
+	    sessionStorage.setItem('video', video);
+            window.location.href = "website.html";
+        }
+    </script>
+    <br><br>
+    <button onclick=buytime()>Buy more time</button>
+    <br>
+    <button onclick=logout()>Log out</button>
+    <br>
+    <p id="enough"></p>
+    <script>
+        variableElement = document.getElementById("enough");
+        variableElement.innerHTML = "";
+	function buytime(){
+            variableElement = document.getElementById("enough");
+	    if (users[user]["money"] >= 10){
+		users[user]["time"]  += 30;
+		users[user]["money"] -= 10;
+                variableElement.innerHTML = "";
+	    }else{
+                variableElement.innerHTML = "金額不足";
+	    }
+            variableElement = document.getElementById("dollar");
+            variableElement.innerHTML = str1 + users[user]["money"] + str2;
+            variableElement = document.getElementById("time");
+            variableElement.innerHTML = str3 + users[user]["time"] + str4;
+	}
+	function logout(){
+	    users = JSON.stringify(users);
+            sessionStorage.setItem('users', users);
+	    window.location.href = "login.html";
+	}
+    </script>
+</body>
+</html>
+

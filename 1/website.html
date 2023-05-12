@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Video Player</h1>
+    <h3 id="dollar"></h3>
+
+    <script>
+        var str1 = "You have ";
+	var money = parseInt(sessionStorage.getItem('money'));
+	var str2 = " dollars."
+        var variableElement = document.getElementById("dollar");
+        variableElement.innerHTML = str1 + money + str2;
+    </script>
+
+    <h3 id="time"></h3>
+
+    <script>
+        var str1 = "You have ";
+	var time = parseInt(sessionStorage.getItem('time'));
+        var time2 = time;
+	var str2 = " seconds to watch the video."
+        var variableElement = document.getElementById("time");
+        variableElement.innerHTML = str1 + time + str2;
+        if (time2 < 0){
+            sessionStorage.setItem("time", time2);
+            window.location.href = "../index.html"
+	}
+    </script>
+
+<video id="video" width=480 height=360 controls src="video.mp4" type="b/mp4"/>
+  Your browser does not support the video tag.
+</video>
+
+    <script>
+        var video = document.getElementById("video");
+        video.addEventListener("timeupdate", function() {
+            time2 = time - Math.round(video.currentTime);
+            document.getElementById("time").textContent = "You have " + time2 + " seconds to watch the video.";
+            if (time2 < 0){
+		sessionStorage.setItem("time", time2);
+		sessionStorage.setItem("money", money);
+	        window.location.href = "../index.html"
+	    }
+        });
+    </script>
+
+
+    <button onclick=goback()>Click to back to the previous page</button>
+
+    <script>
+        function goback() {
+	    sessionStorage.setItem("money", money);
+            sessionStorage.setItem("time", time2);
+            window.location.href = "../index.html";
+        }
+    </script>
+
+</body>
+</html>
