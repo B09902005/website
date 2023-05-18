@@ -15,6 +15,7 @@
 	<span id="time"></span>
         <button onclick=buytime() class="buy_button">購買更多時間</button>
     </div>
+    <h2 id="enough" class="red"></h2>
 
     <!-- 關於使用者資料的程式碼 -->
     <script>
@@ -46,7 +47,7 @@
 	    <li>所有人會有各自的可觀看時數。當觀看時數歸零時，即無法觀看影片。</li>
 	    <li>所有人會有各自的消費額度，可以用來換取觀看時數。消費額度過低則無法換取。</li>
 	    <li>觀看影片過程中，<span class="red">請勿與他人一同觀看，或由他人代為觀看。</span>若經偵測發現有他人正在觀看影片，將釋出警告並自動關閉影片。</li>
-	    <li>點進影片後，將跳出對話框詢問可否開啟鏡頭，請點選「同意」，以方便進行偵測。</li>
+	    <li>點進影片後，將跳出對話框詢問可否開啟鏡頭，<span class="red">請點選「允許」</span>，以方便進行偵測。若不允許則無法觀看影片。</li>
 	</ol>
     </div>
 
@@ -81,7 +82,6 @@
     </script>
 
     <!-- 計算使用者金錢是否足夠 -->
-    <p id="enough"></p>
     <script>
         variableElement = document.getElementById("enough");
         variableElement.innerHTML = "";

@@ -20,6 +20,7 @@
 	<span id="time"></span>
         <button onclick=buytime() class="buy_button">購買更多時間</button>
     </div>
+    <h2 id="enough" class="red"></h2>
 
     <!-- 使用者資料相關程式 -->
     <script>
@@ -52,13 +53,40 @@
 	}
     </script>
 
+    <!-- 計算使用者金錢是否足夠 -->
+    <script>
+        variableElement = document.getElementById("enough");
+        variableElement.innerHTML = "";
+	function buytime(){
+            variableElement = document.getElementById("enough");
+	    if (users[user]["money"] >= 10){
+		users[user]["time"]  += 30;
+		users[user]["money"] -= 10;
+                variableElement.innerHTML = "";
+	    }else{
+                variableElement.innerHTML = "金額不足";
+	    }
+            variableElement = document.getElementById("dollar");
+            variableElement.innerHTML = str1 + users[user]["money"] + str2;
+            variableElement = document.getElementById("time");
+            variableElement.innerHTML = str3 + users[user]["time"] + str4;
+	}
+    </script>
 
-    <h1 id="number"></h1>
+    <h2 id="number"></h2>
+
+    <!-- 顯示影片與攝影機 -->
+  <div class="container">
+    <video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
+    Your browser does not support the video tag. </video>
+    <video class="input_video" width="0px" height="0px"></video>
+    <canvas class="output_canvas" width="320px" height="180px"></canvas>
+  </div>
+
 
     <!-- 影片計時器程式 -->
     <script>
-        var video = document.getElementById("video");
-	video.src = videoname;
+	var video = document.getElementById("video");
 	var originaltime = users[user]["time"];
 	var starttime = Date.now();
 	var playing = false;
@@ -79,7 +107,7 @@
         video.addEventListener("timeupdate", function() {
 	    if (playing == true){
         	users[user]["time"] = Math.round(originaltime - (Date.now() - starttime)/1000);
-        	document.getElementById("time").textContent = "You have " + users[user]["time"] + " seconds left to watch the video.";
+        	document.getElementById("time").textContent = "剩餘時間：" + users[user]["time"] + "秒";
         	if (users[user]["time"] < 0){
 		    users = JSON.stringify(users);
 		    sessionStorage.setItem("users", users);
@@ -102,65 +130,53 @@
     <button onclick=goback()>Click to back to the previous page</button>
 
 
-    <!-- 顯示影片與攝影機 -->
-  <div class="container">
-    <video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
-    Your browser does not support the video tag. </video>
-    //<video class="input_video"></video>
-    <canvas class="output_canvas" width="320px" height="180px"></canvas>
-  </div>
 
 <!-- 攝影機相關程式 -->
 <script type="module">
-const videoElement = document.getElementsByClassName('input_video')[0];
-const canvasElement = document.getElementsByClassName('output_canvas')[0];
-const canvasCtx = canvasElement.getContext('2d');
-const drawingUtils = window;
-var variableElement = document.getElementById("who");
+    const videoElement = document.getElementsByClassName('input_video')[0];
+    const canvasElement = document.getElementsByClassName('output_canvas')[0];
+    const canvasCtx = canvasElement.getContext('2d');
+    const drawingUtils = window;
+    var variableElement = document.getElementById("number");
+    var opencamera = false;
 
-function onResults(results) {
-  // Draw the overlays.
-  canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.drawImage(
-      results.image, 0, 0, canvasElement.width, canvasElement.height);
-  if (results.detections.length > 0) {
-    drawingUtils.drawRectangle(
-        canvasCtx, results.detections[0].boundingBox,
-        {color: 'blue', lineWidth: 4, fillColor: '#00000000'});
-    drawingUtils.drawLandmarks(canvasCtx, results.detections[0].landmarks, {
-      color: 'red',
-      radius: 5,
+    function onResults(results) {
+    // Draw the overlays.
+	if (opencamera == false){
+	    video.src = videoname;
+	}
+	opencamera = true;
+	canvasCtx.save();
+	canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+	canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+	if (results.detections.length > 0) {
+	    drawingUtils.drawRectangle(canvasCtx, results.detections[0].boundingBox,{color: 'blue', lineWidth: 4, fillColor: '#00000000'});
+    	    drawingUtils.drawLandmarks(canvasCtx, results.detections[0].landmarks, {color: 'red',radius: 5,});
+	}
+	if (results.detections.length > 1){
+	    users = JSON.stringify(users);
+	    sessionStorage.setItem("users", users);
+            window.location.href = "front.html";
+	}
+	variableElement.innerHTML = "目前觀看人數：" + results.detections.length;
+	canvasCtx.restore();
+    }
+
+    const faceDetection = new FaceDetection({locateFile: (file) => { return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.0/${file}`; }});
+    faceDetection.setOptions({
+	model: 'short',
+	minDetectionConfidence: 0.5
     });
-  }
-  if (results.detections.length > 1){
-	users = JSON.stringify(users);
-	sessionStorage.setItem("users", users);
-        window.location.href = "front.html";	
-  }
-  variableElement.innerHTML = "Num of people: " + results.detections.length;
-  console.log(results.detections.length)
-  canvasCtx.restore();
-}
+    faceDetection.onResults(onResults);
 
-const faceDetection = new FaceDetection({locateFile: (file) => {
-  return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.0/${file}`;
-}});
-faceDetection.setOptions({
-  model: 'short',
-  minDetectionConfidence: 0.5
-});
-faceDetection.onResults(onResults);
-
-const camera = new Camera(videoElement, {
-  onFrame: async () => {
-    await faceDetection.send({image: videoElement});
-  },
-  width: 1280,
-  height: 720
-});
-camera.start();
+    const camera = new Camera(videoElement, {
+	onFrame: async () => {
+	    await faceDetection.send({image: videoElement});
+  	},
+	width: 1280,
+	height: 720
+    });
+    camera.start();
 </script>
 </body>
 </html>
-
