@@ -2,85 +2,13 @@
 <html>
 <head>
     <title>Video Player</title>
-    <style>
-    body {
-	background-image: url("sky.jpeg");
-	background-repeat: repeat;
-	background-size: cover;
-    }
-    .user-info {
-      display: flex;
-      // flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #f5f5f5;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-    
-    .user-info span {
-      font-size:24px;
-      font-weight: bold;
-    }
-
-    .user-info h1 {
-      align-items: center;
-      font-size:24px;
-      font-weight: bold;
-    }
-    .logout-btn {
-      background-color: #ff6666;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .site-rules {
-      background-color: #f5f5f5;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-	font-size: 45px;
-	color: blue;
-	font-weight: bold;
-	text-align: center;
-	font-family: Arial, sans-serif;
-    }
-
-
-    h2 {
-	font-size: 30px;
-	color: black;
-	font-weight: bold;
-	text-align: center;
-	font-family: Arial, sans-serif;
-    }
-    .red {
-	color: red;
-    }
-
-    button {
-	padding: 10px 20px;
-	background-color: #4CAF50;
-	color: #fff;
-	border: none;
-	border-radius: 5px;
-	margin: 0 10px;
-	font-size: 16px;
-	cursor: pointer;
-    }
-    .buy_button{
-	background-color: #E0E000;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
     <h1> 程式設計課程網頁觀看區 </h1>
 
+    <!-- 顯示使用者資料 -->
     <h2 id="who"></h2>
     <div class="user-info">
 	<span id="dollar"></span>
@@ -88,6 +16,7 @@
         <button onclick=buytime() class="buy_button">購買更多時間</button>
     </div>
 
+    <!-- 關於使用者資料的程式碼 -->
     <script>
 	var user  = sessionStorage.getItem("using");
 	var users = sessionStorage.getItem("users");
@@ -110,7 +39,7 @@
         variableElement.innerHTML = str3 + time + str4;
     </script>
 
-
+    <!-- 網頁使用規則 -->
     <div class="site-rules">
 	<p>網站使用規則：</p>
 	<ol>
@@ -121,19 +50,37 @@
 	</ol>
     </div>
 
+    <!-- 影片連結按鈕 -->
     <button onclick=redirectTo("1/video.mp4")>Watch Video 1</button>
     <button onclick=redirectTo("2/video.mp4")>Watch Video 2</button>
     <button onclick=redirectTo("3/video.mp4")>Watch Video 3</button>
+
+    <!-- 影片連結按鈕相關程式碼 -->
     <script>
         function redirectTo(video) {
-	    users = JSON.stringify(users);
-            sessionStorage.setItem('users', users);
-	    sessionStorage.setItem('video', video);
-            window.location.href = "website.html";
+	    //const permission = confirm("是否同意開啟攝影機？");
+	    //if (permission){
+		users = JSON.stringify(users);
+        	sessionStorage.setItem('users', users);
+		sessionStorage.setItem('video', video);
+        	window.location.href = "website.html";
+	    //} else{
+	    //	alert("很抱歉，您需要同意開啟攝影機才能觀看影片。");
         }
     </script>
+
+    <!-- 登出鍵 -->
     <br><br>
     <button class="logout-btn">登出</button>
+    <script>
+	function logout(){
+	    users = JSON.stringify(users);
+            sessionStorage.setItem('users', users);
+	    window.location.href = "index.html";
+	}
+    </script>
+
+    <!-- 計算使用者金錢是否足夠 -->
     <p id="enough"></p>
     <script>
         variableElement = document.getElementById("enough");
@@ -151,11 +98,6 @@
             variableElement.innerHTML = str1 + users[user]["money"] + str2;
             variableElement = document.getElementById("time");
             variableElement.innerHTML = str3 + users[user]["time"] + str4;
-	}
-	function logout(){
-	    users = JSON.stringify(users);
-            sessionStorage.setItem('users', users);
-	    window.location.href = "index.html";
 	}
     </script>
 </body>

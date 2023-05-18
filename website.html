@@ -7,13 +7,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.1/drawing_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.0/face_detection.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-    <h1 id="who"></h1>
-    <h3 id="dollar"></h3>
-    <h3 id="time"></h3>
-    <h1 id="number"></h1>
+    <h1> 程式設計課程網頁觀看區 </h1>
+
+    <!-- 顯示使用者資料 -->
+    <h2 id="who"></h2>
+    <div class="user-info">
+	<span id="dollar"></span>
+	<span id="time"></span>
+        <button onclick=buytime() class="buy_button">購買更多時間</button>
+    </div>
+
+    <!-- 使用者資料相關程式 -->
     <script>
 	var user  = sessionStorage.getItem("using");
 	var users = sessionStorage.getItem("users");
@@ -23,30 +31,31 @@
 	console.log(users);
 	console.log(videoname);
         var variableElement = document.getElementById("who");
-        variableElement.innerHTML = "Hello, " + user;
+        variableElement.innerHTML = "學生名：" + user;
 
-        var str1 = "You have ";
+        var str1 = "剩餘金額： ";
 	var money = parseInt(users[user]["money"]);
-	var str2 = " dollars."
+	var str2 = "元"
         variableElement = document.getElementById("dollar");
         variableElement.innerHTML = str1 + money + str2;
 
-        var str3 = "You have ";
+        var str3 = "剩餘觀看時間： ";
 	var time = parseInt(users[user]["time"]);
-	var str4 = " seconds left to watch the video."
+	var str4 = "秒"
         var variableElement = document.getElementById("time");
         variableElement.innerHTML = str3 + users[user]["time"] + str4;
         if (users[user]["time"] < 0){
 	    users = JSON.stringify(users);
             sessionStorage.setItem("users", users);
             window.location.href = "front.html";
+	    alert("影片觀看時間已用完，請再購買觀看時數已繼續觀看影片");
 	}
     </script>
 
-<video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
-  Your browser does not support the video tag.
-</video>
 
+    <h1 id="number"></h1>
+
+    <!-- 影片計時器程式 -->
     <script>
         var video = document.getElementById("video");
 	video.src = videoname;
@@ -80,9 +89,7 @@
         });
     </script>
 
-
-    <button onclick=goback()>Click to back to the previous page</button>
-
+    <!-- 回到上一頁的按鈕與程式 -->
     <script>
         function goback() {
 	    users = JSON.stringify(users);
@@ -91,13 +98,19 @@
         }
     </script>
 
-  <div class="container">
-    <video class="input_video"></video>
-    <canvas class="output_canvas" width="1280px" height="720px"></canvas>
-  </div>
-</body>
-</html>
+    <br><br>
+    <button onclick=goback()>Click to back to the previous page</button>
 
+
+    <!-- 顯示影片與攝影機 -->
+  <div class="container">
+    <video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
+    Your browser does not support the video tag. </video>
+    //<video class="input_video"></video>
+    <canvas class="output_canvas" width="320px" height="180px"></canvas>
+  </div>
+
+<!-- 攝影機相關程式 -->
 <script type="module">
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
@@ -148,3 +161,6 @@ const camera = new Camera(videoElement, {
 });
 camera.start();
 </script>
+</body>
+</html>
+

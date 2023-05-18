@@ -1,65 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>選單頁面</title>
-  <style>
-    body {
-      background-color: #f1f1f1;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    p {
-      text-align: center;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .buttons {
-      text-align: center;
-    }
-
-    .buttons button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      margin: 0 10px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .buttons button:hover {
-      background-color: #45a049;
-    }
-  </style>
+  <title>開啟攝影機同意通知</title>
 </head>
 <body>
-  <div class="container">
-    <h1>選單標題</h1>
-    <p>這是一段選單頁面的文字說明</p>
-    <div class="buttons">
-      <button>按鈕1</button>
-      <button>按鈕2</button>
-      <button>按鈕3</button>
-    </div>
-  </div>
+  <script>
+    function askForCameraPermission() {
+      // 彈出通知窗口詢問用戶是否同意開啟攝影機
+      const permission = confirm("是否同意開啟攝影機？");
+
+      if (permission) {
+        // 如果用戶同意，導航到網站的主頁或目標頁面
+        window.location.href = "main.html";
+      } else {
+        // 如果用戶不同意，可以采取相應的操作，例如顯示提示訊息或導航到其他頁面
+        alert("很抱歉，您需要同意開啟攝影機才能進入網站。");
+      }
+    }
+  </script>
+
+  <!-- 在進入點按鈕或連結上設置點擊事件，調用askForCameraPermission函數 -->
+  <button onclick="askForCameraPermission()">進入網站</button>
 </body>
 </html>
 
