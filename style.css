@@ -63,3 +63,7 @@
     .buy_button{
 	background-color: #E0E000;
     }
+    .video {
+	display: flex;
+	align-items: center;
+    }

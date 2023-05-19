@@ -73,16 +73,19 @@
 	}
     </script>
 
-    <h2 id="number"></h2>
 
     <!-- 顯示影片與攝影機 -->
-  <div class="container">
-    <video id="video" width=480 height=360 controls src=videoname type="b/mp4"/>
+    <video class="video" id="video" width=960 height=720 controls src=videoname type="b/mp4"/>
     Your browser does not support the video tag. </video>
+    <br><br>
+
+  <div class="container">
     <video class="input_video" width="0px" height="0px"></video>
     <canvas class="output_canvas" width="320px" height="180px"></canvas>
   </div>
 
+
+    <h2 id="number"></h2>
 
     <!-- 影片計時器程式 -->
     <script>
@@ -127,8 +130,8 @@
     </script>
 
     <br><br>
-    <button onclick=goback()>Click to back to the previous page</button>
 
+    <button onclick=goback()>Click to back to the previous page</button>
 
 
 <!-- 攝影機相關程式 -->
@@ -139,6 +142,7 @@
     const drawingUtils = window;
     var variableElement = document.getElementById("number");
     var opencamera = false;
+    var prevdetecttime = Date.now();
 
     function onResults(results) {
     // Draw the overlays.
@@ -154,10 +158,18 @@
     	    drawingUtils.drawLandmarks(canvasCtx, results.detections[0].landmarks, {color: 'red',radius: 5,});
 	}
 	if (results.detections.length > 1){
-	    users = JSON.stringify(users);
-	    sessionStorage.setItem("users", users);
-            window.location.href = "front.html";
+            // 超過三秒都有兩人以上，則關閉影片
+	    if (Date.now() - prevdetecttime > 3000){
+		var users2 = JSON.stringify(users);
+		sessionStorage.setItem("users", users2);
+        	window.location.href = "front.html";
+		console.log(users);
+	    }
+	    console.log(users);
+	}else{
+	    prevdetecttime = Date.now();
 	}
+	console.log(prevdetecttime);
 	variableElement.innerHTML = "目前觀看人數：" + results.detections.length;
 	canvasCtx.restore();
     }
